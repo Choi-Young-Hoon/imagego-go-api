@@ -5,6 +5,7 @@ import (
 	"imagego-go-api/database"
 	"imagego-go-api/httpserver"
 	"imagego-go-api/util"
+	"strconv"
 )
 
 func main() {
@@ -22,11 +23,12 @@ func main() {
 		return
 	}
 
-	config := util.NewServerConifg()
-	err := config.LoadConfig()
+	err := util.LoadConfig()
 	if err != nil {
 		panic(err)
 	}
+
+	config := util.GetServerConfig()
 
 	err = database.CreateDefaultDBConnection(config.Database).Connect()
 	if err != nil {
@@ -37,6 +39,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	httpServer := httpserver.NewHttpServer("8080")
+
+	// int to string
+	port := strconv.Itoa(config.Port)
+	httpServer := httpserver.NewHttpServer(port)
 	httpServer.HttpStart()
 }

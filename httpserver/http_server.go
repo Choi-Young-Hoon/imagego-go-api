@@ -3,6 +3,7 @@ package httpserver
 import (
 	"context"
 	"imagego-go-api/httpserver/handler"
+	"imagego-go-api/util"
 	"net/http"
 )
 
@@ -58,7 +59,7 @@ func (hs *HttpServer) setHandler() {
 	// hs의 httpServer에 ServerMux에 핸들러 지정해서 등록
 	httpMux := http.NewServeMux()
 
-	httpMux.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("./images"))))
+	httpMux.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir(util.GetServerConfig().ImageDir))))
 
 	httpMux.HandleFunc("/login", handler.LoginHandler)
 	httpMux.HandleFunc("/register", handler.RegisterHandler)

@@ -14,7 +14,6 @@ type Image struct {
 	Title       string `gorm:"not null"`
 	Description string `gorm:""`
 	ImageName   string `gorm:"not null"`
-	ImageUrl    string `gorm:"not null"`
 
 	dbConnection *DBConnection `gorm:"-"`
 }

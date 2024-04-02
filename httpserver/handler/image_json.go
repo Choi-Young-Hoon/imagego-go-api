@@ -1,6 +1,9 @@
 package handler
 
-import "imagego-go-api/database"
+import (
+	"imagego-go-api/database"
+	"imagego-go-api/util"
+)
 
 type ImageRequest struct {
 }
@@ -13,23 +16,27 @@ type ImageResponse struct {
 }
 
 func NewImageResponseList(image []database.Image) []ImageResponse {
+	config := util.GetServerConfig()
+
 	var imagesResponseList []ImageResponse
 	for _, img := range image {
 		imagesResponseList = append(imagesResponseList, ImageResponse{
 			Id:          img.ID,
 			Title:       img.Title,
 			Description: img.Description,
-			ImageUrl:    img.ImageUrl,
+			ImageUrl:    config.ImageServerUrl + "/" + img.ImageName,
 		})
 	}
 	return imagesResponseList
 }
 
 func NewImageResponse(image database.Image) ImageResponse {
+	config := util.GetServerConfig()
+
 	return ImageResponse{
 		Id:          image.ID,
 		Title:       image.Title,
 		Description: image.Description,
-		ImageUrl:    image.ImageUrl,
+		ImageUrl:    config.ImageServerUrl + "/" + image.ImageName,
 	}
 }

@@ -5,9 +5,21 @@ import (
 	"os"
 )
 
+var defaultConfig = NewServerConifg()
+
+func LoadConfig() error {
+	return defaultConfig.LoadConfig()
+}
+
+func GetServerConfig() ServerConfig {
+	return defaultConfig
+}
+
 func GenerateDefaultServerConfig() {
 	config := ServerConfig{
-		Port: 8080,
+		Port:           8080,
+		ImageServerUrl: "http://192.168.219.103:8080",
+		ImageDir:       "img",
 		Database: DatabaseConfig{
 			Host:     "localhost",
 			User:     "choi",
@@ -38,8 +50,10 @@ type DatabaseConfig struct {
 }
 
 type ServerConfig struct {
-	Port     int            `yaml:"port"`
-	Database DatabaseConfig `yaml:"database"`
+	ImageServerUrl string         `yaml:"image_server_url"`
+	ImageDir       string         `yaml:"image_dir"`
+	Port           int            `yaml:"port"`
+	Database       DatabaseConfig `yaml:"database"`
 }
 
 func (sc *ServerConfig) LoadConfig() error {

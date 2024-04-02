@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/google/uuid"
 	"imagego-go-api/database"
+	"imagego-go-api/util"
 	"io"
 	"mime/multipart"
 	"net/http"
@@ -44,16 +45,15 @@ func createImageInfo(req *http.Request) (error, int) {
 	description := req.FormValue("description")
 
 	filename := fmt.Sprintf("%s%s", uuid.New(), filepath.Ext(header.Filename))
-	fileUrl := req.Host + "/images/" + filename
 	err = imageCopy(file, filename)
 	if err != nil {
 		return err, http.StatusInternalServerError
 	}
 
-	err = imageDBInsert(userId, title, description, filename, fileUrl)
+	err = imageDBInsert(userId, title, description, filename)
 	if err != nil {
 		// db insert 실패하면 생성된 파일을 지운다.
-		os.Remove(fmt.Sprintf("./images/%s", filename))
+		os.Remove(fmt.Sprintf(util.GetServerConfig().ImageDir+"/%s", filename))
 		return err, http.StatusInternalServerError
 	}
 
@@ -61,9 +61,11 @@ func createImageInfo(req *http.Request) (error, int) {
 }
 
 func imageCopy(targetFile multipart.File, destFilename string) error {
+	imageDir := util.GetServerConfig().ImageDir
+
 	// 현재 하위 디렉토리에 image 폴더를 생성한다.
-	err := os.MkdirAll("./images", os.ModePerm)
-	dst, err := os.Create(fmt.Sprintf("./images/%s", destFilename))
+	err := os.MkdirAll(imageDir, os.ModePerm)
+	dst, err := os.Create(fmt.Sprintf(imageDir+"/%s", destFilename))
 	if err != nil {
 		return err
 	}
@@ -77,14 +79,13 @@ func imageCopy(targetFile multipart.File, destFilename string) error {
 	return nil
 }
 
-func imageDBInsert(userId, title, description, filename, fileUrl string) error {
+func imageDBInsert(userId, title, description, filename string) error {
 	image := database.NewImage()
 
 	image.UserID = userId
 	image.Title = title
 	image.Description = description
 	image.ImageName = filename
-	image.ImageUrl = fileUrl
 
 	err := image.Create()
 	if err != nil {
