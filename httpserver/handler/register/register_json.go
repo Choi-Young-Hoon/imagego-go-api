@@ -1,4 +1,4 @@
-package handler
+package register
 
 type RegisterRequest struct {
 	Id       string `json:"id"`

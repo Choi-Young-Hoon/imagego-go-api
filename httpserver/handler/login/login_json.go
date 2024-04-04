@@ -1,4 +1,4 @@
-package handler
+package login
 
 type LoginRequest struct {
 	Id       string `json:"id"`

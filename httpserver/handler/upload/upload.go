@@ -1,9 +1,10 @@
-package handler
+package upload
 
 import (
 	"fmt"
 	"github.com/google/uuid"
 	"imagego-go-api/database"
+	"imagego-go-api/httpserver/jwt"
 	"imagego-go-api/util"
 	"io"
 	"mime/multipart"
@@ -12,7 +13,7 @@ import (
 	"path/filepath"
 )
 
-func UploadHandler(res http.ResponseWriter, req *http.Request) {
+func UploadHandler(res http.ResponseWriter, req *http.Request, claim *jwt.JwtUserCalim) {
 	if req.Method != http.MethodPost {
 		http.Error(res, "Method not allowed", http.StatusMethodNotAllowed)
 		return

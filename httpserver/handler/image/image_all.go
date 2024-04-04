@@ -1,4 +1,4 @@
-package handler
+package image
 
 import (
 	"encoding/json"
@@ -7,20 +7,10 @@ import (
 	"net/http"
 )
 
-func ImageAllHandler(res http.ResponseWriter, req *http.Request) {
+func ImageAllHandler(res http.ResponseWriter, req *http.Request, claim *jwt.JwtUserCalim) {
 	// Get 요청일 때만 처리
 	if req.Method != http.MethodGet {
 		http.Error(res, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	bearer := req.Header.Values("Authorization")
-	// Bearer 에서 jwt 토큰을 추출
-	jwtToken := bearer[0][7:]
-
-	claim, err := jwt.ValidateJwtToken(jwtToken)
-	if err != nil {
-		http.Error(res, err.Error(), http.StatusUnauthorized)
 		return
 	}
 

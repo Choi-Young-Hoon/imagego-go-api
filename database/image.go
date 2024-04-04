@@ -10,7 +10,7 @@ func NewImage() Image {
 
 type Image struct {
 	gorm.Model
-	UserID      string `gorm:"references:UserID" `
+	UserID      string `gorm:"references:UserID"`
 	Title       string `gorm:"not null"`
 	Description string `gorm:""`
 	ImageName   string `gorm:"not null"`
@@ -47,4 +47,22 @@ func (image *Image) FindByUserId(userId string) ([]Image, error) {
 		return nil, result.Error
 	}
 	return images, nil
+}
+
+func (image *Image) DeleteById(id string) error {
+	result := image.dbConnection.db.Where("id = ?", id).Delete(image)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
+}
+
+func (image *Image) UpdateById(id string) error {
+	result := image.dbConnection.db.Model(image).Where("id = ?", id).Updates(image)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	return nil
 }

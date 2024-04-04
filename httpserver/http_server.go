@@ -2,7 +2,12 @@ package httpserver
 
 import (
 	"context"
-	"imagego-go-api/httpserver/handler"
+	"imagego-go-api/httpserver/handler/echo"
+	"imagego-go-api/httpserver/handler/image"
+	"imagego-go-api/httpserver/handler/login"
+	"imagego-go-api/httpserver/handler/register"
+	"imagego-go-api/httpserver/handler/upload"
+	"imagego-go-api/httpserver/jwt"
 	"imagego-go-api/util"
 	"net/http"
 )
@@ -61,12 +66,12 @@ func (hs *HttpServer) setHandler() {
 
 	httpMux.Handle("/img/", http.StripPrefix("/img/", http.FileServer(http.Dir(util.GetServerConfig().ImageDir))))
 
-	httpMux.HandleFunc("/login", handler.LoginHandler)
-	httpMux.HandleFunc("/register", handler.RegisterHandler)
-	httpMux.HandleFunc("/echo", handler.EchoHandler)
-	httpMux.HandleFunc("/upload", handler.UploadHandler)
-	httpMux.HandleFunc("/image/all", handler.ImageAllHandler)
-	httpMux.HandleFunc("/image/{number}", handler.ImageHandler)
+	httpMux.HandleFunc("/login", login.LoginHandler)
+	httpMux.HandleFunc("/register", register.RegisterHandler)
+	httpMux.HandleFunc("/echo", jwt.JwtVerifyMiddleware(echo.EchoHandler))
+	httpMux.HandleFunc("/upload", jwt.JwtVerifyMiddleware(upload.UploadHandler))
+	httpMux.HandleFunc("/image/all", jwt.JwtVerifyMiddleware(image.ImageAllHandler))
+	httpMux.HandleFunc("/image/{number}", jwt.JwtVerifyMiddleware(image.ImageHandler))
 
 	hs.httpServer.Handler = httpMux
 }

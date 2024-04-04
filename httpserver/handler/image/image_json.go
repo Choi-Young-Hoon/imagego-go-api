@@ -1,4 +1,4 @@
-package handler
+package image
 
 import (
 	"imagego-go-api/database"
@@ -6,13 +6,17 @@ import (
 )
 
 type ImageRequest struct {
+	// Update요청 (PUT) 시에만 사용
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
 }
 
 type ImageResponse struct {
-	Id          uint   `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	ImageUrl    string `json:"imageUrl"`
+	Result      string `json:"result"`
+	Id          uint   `json:"id,omitempty"`
+	Title       string `json:"title,omitempty"`
+	Description string `json:"description,omitempty"`
+	ImageUrl    string `json:"imageUrl,omitempty"`
 }
 
 func NewImageResponseList(image []database.Image) []ImageResponse {
@@ -21,6 +25,7 @@ func NewImageResponseList(image []database.Image) []ImageResponse {
 	var imagesResponseList []ImageResponse
 	for _, img := range image {
 		imagesResponseList = append(imagesResponseList, ImageResponse{
+			Result:      "success",
 			Id:          img.ID,
 			Title:       img.Title,
 			Description: img.Description,
@@ -34,9 +39,22 @@ func NewImageResponse(image database.Image) ImageResponse {
 	config := util.GetServerConfig()
 
 	return ImageResponse{
+		Result:      "success",
 		Id:          image.ID,
 		Title:       image.Title,
 		Description: image.Description,
 		ImageUrl:    config.ImageServerUrl + "/" + image.ImageName,
+	}
+}
+
+func NewImageDeleteResponse() ImageResponse {
+	return ImageResponse{
+		Result: "success",
+	}
+}
+
+func NewImageUpdateResponse() ImageResponse {
+	return ImageResponse{
+		Result: "success",
 	}
 }
