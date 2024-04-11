@@ -10,13 +10,13 @@ import (
 func ImageHandler(res http.ResponseWriter, req *http.Request, claim *jwt.JwtUserCalim) {
 	number := req.PathValue("number")
 
-	if req.Method == "GET" {
+	if req.Method == http.MethodGet {
 		FindImage(res, number, database.NewImage())
 		return
-	} else if req.Method == "DELETE" {
+	} else if req.Method == http.MethodDelete {
 		DeleteImage(res, number, database.NewImage())
 		return
-	} else if req.Method == "PUT" {
+	} else if req.Method == http.MethodPut {
 		UpdateImage(res, req, number, database.NewImage())
 		return
 	}

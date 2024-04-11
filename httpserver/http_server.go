@@ -7,6 +7,7 @@ import (
 	"imagego-go-api/httpserver/handler/login"
 	"imagego-go-api/httpserver/handler/register"
 	"imagego-go-api/httpserver/handler/upload"
+	"imagego-go-api/httpserver/handler/upscale"
 	"imagego-go-api/httpserver/jwt"
 	"imagego-go-api/util"
 	"net/http"
@@ -72,6 +73,7 @@ func (hs *HttpServer) setHandler() {
 	httpMux.HandleFunc("/upload", jwt.JwtVerifyMiddleware(upload.UploadHandler))
 	httpMux.HandleFunc("/image/all", jwt.JwtVerifyMiddleware(image.ImageAllHandler))
 	httpMux.HandleFunc("/image/{number}", jwt.JwtVerifyMiddleware(image.ImageHandler))
+	httpMux.HandleFunc("/upscale/{number}", jwt.JwtVerifyMiddleware(upscale.UpscaleHandler))
 
 	hs.httpServer.Handler = httpMux
 }

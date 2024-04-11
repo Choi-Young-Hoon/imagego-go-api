@@ -8,7 +8,7 @@ import (
 )
 
 func LoginHandler(res http.ResponseWriter, req *http.Request) {
-	if req.Method != "POST" {
+	if req.Method != http.MethodPost {
 		http.Error(res, "404 Not Found", http.StatusNotFound)
 	}
 
